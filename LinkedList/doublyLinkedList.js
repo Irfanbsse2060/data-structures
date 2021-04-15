@@ -1,13 +1,14 @@
 
 
 class Node {
-    constructor(value, node) {
+    constructor(value, prevNode, nextNode) {
         this.value = value;
-        this.next = node;
+        this.previous = prevNode;
+        this.next = nextNode;
     }
 }
 
-class SingleLinkedList {
+class DoublyLinkedList {
     constructor() {
         this.head = null
         this.tail =  null
@@ -17,29 +18,31 @@ class SingleLinkedList {
     addInTheBeginning(value) {
         if(this.head === null)
         {
-            const node = new Node(value,null)
+            const node = new Node(value,null, null)
             this.head = node
             this.tail = node
         }
         else
         {
-            const node = new Node(value, this.head)
+            const node = new Node(value, null, this.head)
+            node.next.previous = node
             this.head =  node
         }
     }
 
     // O(1)
     addInTheEnd(value) {
-        const node = new Node(value,null)
         if(this.head === null)
         {
+            const node = new Node(value,null, null)
             this.head = node
             this.tail = node
         }
         else
         {
-            this.tail.next  = node
-            this.tail =  node
+            const node = new Node(value,this.tail, null)
+            node.previous.next = node
+            this.tail  = node
         }
     }
 
@@ -48,19 +51,15 @@ class SingleLinkedList {
         if(this.head === null)
             return;
         this.head = this.head.next
+        this.head.previous = null
     }
 
-    // O(n)
+    // O(1)
     removeFromEnd() {
-        if(this.head === null)
+        if(this.tail === null)
             return;
-        let node =  this.head
-        while(node.next !== this.tail)
-        {
-            node = node.next
-        }
-        node.next = null
-        this.tail = node
+        this.tail = this.tail.previous
+        this.tail.next = null
 
     }
 
@@ -103,56 +102,50 @@ class SingleLinkedList {
     remove(value) {
         if(this.head === null)
             return;
+
         let currentNode =  this.head
-        let previousNode = null
         while(currentNode !== null)
         {
             if(currentNode.value === value)
             {
+                currentNode.previous.next = currentNode.next
                 break;
             }
-            previousNode = currentNode
             currentNode = currentNode.next
-        }
-
-
-        if(currentNode!==null)
-        {
-            previousNode.next = currentNode.next
         }
 
     }
 
 }
 
-const singleLinkedList = new SingleLinkedList()
+const doublyLinkedList = new DoublyLinkedList()
 
-console.log(`New List before inserting anything is empty = ${singleLinkedList.isEmpty()}`)
-singleLinkedList.addInTheBeginning(11)
-singleLinkedList.addInTheBeginning(9)
-singleLinkedList.addInTheBeginning(7)
-singleLinkedList.addInTheBeginning(5)
+console.log(`New List before inserting anything is empty = ${doublyLinkedList.isEmpty()}`)
+doublyLinkedList.addInTheBeginning(11)
+doublyLinkedList.addInTheBeginning(9)
+doublyLinkedList.addInTheBeginning(7)
+doublyLinkedList.addInTheBeginning(5)
 
-singleLinkedList.addInTheEnd(13)
+doublyLinkedList.addInTheEnd(13)
 
-console.log(`After inserting records is not empty = ${singleLinkedList.isEmpty()}`)
+console.log(`After inserting records is not empty = ${doublyLinkedList.isEmpty()}`)
 
 console.log(`List content`)
-singleLinkedList.print()
+doublyLinkedList.print()
 
-console.log(`Finding 11 value in the list =`, singleLinkedList.find(11))
+console.log(`Finding 11 value in the list =`, doublyLinkedList.find(11))
 
 
-singleLinkedList.removeFromTheBeginning()
-singleLinkedList.removeFromEnd()
+doublyLinkedList.removeFromTheBeginning()
+doublyLinkedList.removeFromEnd()
 
 console.log(`List content After removing from the beginning and end`)
-singleLinkedList.print()
+doublyLinkedList.print()
 
-singleLinkedList.remove(9)
+doublyLinkedList.remove(9)
 
 console.log(`List content After removing 9 from the list`)
 
-singleLinkedList.print()
+doublyLinkedList.print()
 
 
